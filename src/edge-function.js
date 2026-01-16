@@ -136,7 +136,7 @@ async function handleRequest(request) {
   }
 
   // For unmatched routes, let ESA's SPA fallback handle it
-  return fetch(request);
+  return new Response(null, { status: 404 });
 }
 
 export default {

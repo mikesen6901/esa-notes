@@ -26,6 +26,11 @@ async function handleRequest(request) {
   const url = new URL(request.url);
   const path = url.pathname;
 
+  // Only handle API routes
+  if (!path.startsWith('/api/')) {
+    return null;
+  }
+
   // Handle CORS preflight
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -135,8 +140,11 @@ async function handleRequest(request) {
     }
   }
 
-  // For unmatched routes, let ESA's SPA fallback handle it
-  return new Response(null, { status: 404 });
+  // For unmatched API routes
+  return new Response(JSON.stringify({ error: 'API not found' }), {
+    status: 404,
+    headers: corsHeaders
+  });
 }
 
 export default {

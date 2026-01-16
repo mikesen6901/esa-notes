@@ -25,10 +25,6 @@ const corsHeaders = {
 async function handleRequest(request) {
   const url = new URL(request.url);
   const path = url.pathname;
-
-  // Only handle API routes
-  if (!path.startsWith('/api/')) {
-    return null;
   }
 
   // Handle CORS preflight

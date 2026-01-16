@@ -1,9 +1,6 @@
 // ESA Edge Function for Notes Service
 const KV_NAMESPACE = 'notes_storage';
 
-// Initialize Edge KV
-const edgeKv = new EdgeKV({ namespace: KV_NAMESPACE });
-
 // Generate random ID
 function generateId(length = 8) {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -25,12 +22,14 @@ const corsHeaders = {
 async function handleRequest(request) {
   const url = new URL(request.url);
   const path = url.pathname;
-  }
 
   // Handle CORS preflight
   if (request.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+
+  // Initialize Edge KV
+  const edgeKv = new EdgeKV({ namespace: KV_NAMESPACE });
 
   // API: Create note
   if (path === '/api/notes' && request.method === 'POST') {
@@ -136,11 +135,8 @@ async function handleRequest(request) {
     }
   }
 
-  // For unmatched API routes
-  return new Response(JSON.stringify({ error: 'API not found' }), {
-    status: 404,
-    headers: corsHeaders
-  });
+  // For non-API routes, return 404 to let ESA's SPA fallback handle it
+  return new Response(null, { status: 404 });
 }
 
 export default {
